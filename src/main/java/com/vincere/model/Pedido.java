@@ -13,53 +13,78 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "usuario_id")
-    private Usuario cliente;
+    // 🔹 cliente que fez o pedido
+    @Column(name = "cliente_id", nullable = false)
+    private Long clienteId;
 
-    private LocalDateTime dataCriacao;
-
-    private Double total;
-
+    // 🔹 status do pedido
+    @Column(nullable = false)
     private String status;
 
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    // 🔹 valor total
+    @Column(nullable = false)
+    private Double total;
+
+    // 🔹 data do pedido
+    @Column(nullable = false)
+    private LocalDateTime criadoEm;
+
+    // 🔹 itens do pedido
+    @OneToMany(
+            mappedBy = "pedido",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<ItemPedido> itens = new ArrayList<>();
 
-    public Pedido() {}
-
-    public Pedido(Usuario cliente, Double total, String status) {
-        this.cliente = cliente;
-        this.total = total;
-        this.status = status;
-        this.dataCriacao = LocalDateTime.now();
+    // 🔹 construtor vazio (JPA)
+    public Pedido() {
+        this.criadoEm = LocalDateTime.now();
+        this.status = "CRIADO";
+        this.total = 0.0;
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    // 🔹 getters e setters
+    public Long getId() {
+        return id;
+    }
 
-    public Usuario getCliente() { return cliente; }
-    public void setCliente(Usuario cliente) { this.cliente = cliente; }
+    public Long getClienteId() {
+        return clienteId;
+    }
 
-    public LocalDateTime getDataCriacao() { return dataCriacao; }
-    public void setDataCriacao(LocalDateTime dataCriacao) { this.dataCriacao = dataCriacao; }
+    public void setClienteId(Long clienteId) {
+        this.clienteId = clienteId;
+    }
 
-    public Double getTotal() { return total; }
-    public void setTotal(Double total) { this.total = total; }
+    public String getStatus() {
+        return status;
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-    public List<ItemPedido> getItens() { return itens; }
-    public void setItens(List<ItemPedido> itens) { this.itens = itens; }
+    public Double getTotal() {
+        return total;
+    }
 
-    public void addItem(ItemPedido item) {
+    public void setTotal(Double total) {
+        this.total = total;
+    }
+
+    public LocalDateTime getCriadoEm() {
+        return criadoEm;
+    }
+
+    public List<ItemPedido> getItens() {
+        return itens;
+    }
+
+    // 🔹 método utilitário
+    public void adicionarItem(ItemPedido item) {
         itens.add(item);
         item.setPedido(this);
-    }
-
-    public void removeItem(ItemPedido item) {
-        itens.remove(item);
-        item.setPedido(null);
+        this.total += item.getPrecoUnitario() * item.getQuantidade();
     }
 }
