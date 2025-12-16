@@ -1,3 +1,4 @@
+
 package com.vincere.service;
 
 import com.vincere.dto.PedidoItemRequest;
@@ -7,62 +8,65 @@ import com.vincere.model.Pedido;
 import com.vincere.model.VariacaoProduto;
 import com.vincere.repository.PedidoRepository;
 import com.vincere.repository.VariacaoProdutoRepository;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Service; // 👈 ESTE IMPORT
 
 @Service
+
 public class PedidoService {
 
-    private final PedidoRepository pedidoRepository;
-    private final VariacaoProdutoRepository variacaoProdutoRepository;
+    private final PedidoRepository pedidoRepo;
+    private final VariacaoProdutoRepository variacaoRepo;
 
     public PedidoService(
-            PedidoRepository pedidoRepository,
-            VariacaoProdutoRepository variacaoProdutoRepository
+            PedidoRepository pedidoRepo,
+            VariacaoProdutoRepository variacaoRepo
     ) {
-        this.pedidoRepository = pedidoRepository;
-        this.variacaoProdutoRepository = variacaoProdutoRepository;
+        this.pedidoRepo = pedidoRepo;
+        this.variacaoRepo = variacaoRepo;
     }
 
     public Pedido criarPedido(PedidoRequest request) {
-
-        if (request.getClienteId() == null) {
-            throw new IllegalArgumentException("Cliente não informado");
-        }
 
         if (request.getItens() == null || request.getItens().isEmpty()) {
             throw new IllegalArgumentException("Pedido sem itens");
         }
 
-        // 🔹 cria o pedido
         Pedido pedido = new Pedido();
         pedido.setClienteId(request.getClienteId());
 
-        // 🔹 converte cada item do DTO → Entity
         for (PedidoItemRequest itemReq : request.getItens()) {
 
-            VariacaoProduto variacao = variacaoProdutoRepository
-                    .findById(itemReq.getVariacaoId())
+            VariacaoProduto variacao = variacaoRepo.findById(itemReq.getVariacaoId())
                     .orElseThrow(() -> new IllegalArgumentException("Variação não encontrada"));
 
+            // 🔹 verifica estoque
             if (variacao.getEstoque() < itemReq.getQuantidade()) {
-                throw new IllegalStateException("Estoque insuficiente");
+                throw new IllegalStateException(
+                        "Estoque insuficiente para a variação: " + variacao.getNome()
+                );
             }
 
-            // 🔹 cria o item do pedido
+            // 🔹 baixa estoque
+            variacao.setEstoque(
+                    variacao.getEstoque() - itemReq.getQuantidade()
+            );
+
+            double precoUnitario = itemReq.getPrecoUnitario() != null
+                    ? itemReq.getPrecoUnitario()
+                    : (variacao.getPreco() != null
+                    ? variacao.getPreco()
+                    : variacao.getProduto().getPreco());
+
             ItemPedido item = new ItemPedido(
                     pedido,
                     variacao,
                     itemReq.getQuantidade(),
-                    variacao.getPreco()
+                    precoUnitario
             );
 
-            // 🔹 adiciona ao pedido
             pedido.adicionarItem(item);
-
-            // 🔹 baixa estoque
-            variacao.setEstoque(variacao.getEstoque() - itemReq.getQuantidade());
         }
 
-        return pedidoRepository.save(pedido);
+        return pedidoRepo.save(pedido);
     }
 }

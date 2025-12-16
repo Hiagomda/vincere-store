@@ -10,65 +10,37 @@ public class VariacaoProduto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Produto pai
     @ManyToOne(optional = false)
     @JoinColumn(name = "produto_id", nullable = false)
     private Produto produto;
 
-    // Ex: P, M, G | Azul | 42
     @Column(nullable = false)
     private String nome;
+
+    @Column(nullable = false, length = 500)
+    private String descricao;
 
     @Column(nullable = false)
     private Integer estoque;
 
-    // Pode ser null (usa preço do produto)
     private Double preco;
 
-    // 🔹 construtor vazio (obrigatório)
-    public VariacaoProduto() {
-    }
+    public VariacaoProduto() {}
 
-    // 🔹 GETTERS E SETTERS (OBRIGATÓRIOS)
+    public Long getId() { return id; }
 
-    public Long getId() {
-        return id;
-    }
+    public Produto getProduto() { return produto; }
+    public void setProduto(Produto produto) { this.produto = produto; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
 
-    public Produto getProduto() {
-        return produto;
-    }
+    public String getDescricao() { return descricao; }
+    public void setDescricao(String descricao) { this.descricao = descricao; }
 
-    public void setProduto(Produto produto) {
-        this.produto = produto;
-    }
+    public Integer getEstoque() { return estoque; }
+    public void setEstoque(Integer estoque) { this.estoque = estoque; }
 
-    public String getNome() {
-        return nome;
-    }
-
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public Integer getEstoque() {
-        return estoque;
-    }
-
-    public void setEstoque(Integer estoque) {
-        this.estoque = estoque;
-    }
-
-    public Double getPreco() {
-        return preco;
-    }
-
-    public void setPreco(Double preco) {
-        this.preco = preco;
-    }
+    public Double getPreco() { return preco; }
+    public void setPreco(Double preco) { this.preco = preco; }
 }

@@ -10,31 +10,32 @@ import org.springframework.stereotype.Service;
 @Service
 public class VariacaoProdutoService {
 
-    private final ProdutoRepository produtoRepo;
-    private final VariacaoProdutoRepository variacaoRepo;
+    private final ProdutoRepository produtoRepository;
+    private final VariacaoProdutoRepository variacaoRepository;
 
     public VariacaoProdutoService(
-            ProdutoRepository produtoRepo,
-            VariacaoProdutoRepository variacaoRepo
+            ProdutoRepository produtoRepository,
+            VariacaoProdutoRepository variacaoRepository
     ) {
-        this.produtoRepo = produtoRepo;
-        this.variacaoRepo = variacaoRepo;
+        this.produtoRepository = produtoRepository;
+        this.variacaoRepository = variacaoRepository;
     }
 
-    public VariacaoProduto criar(VariacaoProdutoRequest req) {
+    public VariacaoProduto criar(VariacaoProdutoRequest request) {
 
-        // 1️⃣ buscar produto
-        Produto produto = produtoRepo.findById(req.getProdutoId())
+        //  Buscar produto
+        Produto produto = produtoRepository.findById(request.getProdutoId())
                 .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado"));
 
-        // 2️⃣ criar variação
+        //  Criar variação
         VariacaoProduto variacao = new VariacaoProduto();
         variacao.setProduto(produto);
-        variacao.setNome(req.getNome());
-        variacao.setEstoque(req.getEstoque());
-        variacao.setPreco(req.getPreco());
+        variacao.setNome(request.getNome());
+        variacao.setEstoque(request.getEstoque());
+        variacao.setPreco(request.getPreco());
+        variacao.setDescricao(request.getDescricao());
 
-        // 3️⃣ salvar
-        return variacaoRepo.save(variacao);
+        //  Salvar
+        return variacaoRepository.save(variacao);
     }
 }

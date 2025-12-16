@@ -3,41 +3,23 @@ package com.vincere.dto;
 public class VariacaoProdutoRequest {
 
     private Long produtoId;
-    private String nome;       // ex: P, M, G | Azul | 42
+    private String nome;
+    private String descricao;
     private Integer estoque;
-    private Double preco;      // opcional: se variar do produto
+    private Double preco;
 
-    // 🔹 getters
-    public Long getProdutoId() {
-        return produtoId;
-    }
+    public Long getProdutoId() { return produtoId; }
+    public void setProdutoId(Long produtoId) { this.produtoId = produtoId; }
 
-    public String getNome() {
-        return nome;
-    }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
 
-    public Integer getEstoque() {
-        return estoque;
-    }
+    public String getDescricao() { return descricao; }
+    public void setDescricao(String descricao) { this.descricao = descricao; }
 
-    public Double getPreco() {
-        return preco;
-    }
+    public Integer getEstoque() { return estoque; }
+    public void setEstoque(Integer estoque) { this.estoque = estoque; }
 
-    // 🔹 setters (SEM return!)
-    public void setProdutoId(Long produtoId) {
-        this.produtoId = produtoId;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public void setEstoque(Integer estoque) {
-        this.estoque = estoque;
-    }
-
-    public void setPreco(Double preco) {
-        this.preco = preco;
-    }
+    public Double getPreco() { return preco; }
+    public void setPreco(Double preco) { this.preco = preco; }
 }
