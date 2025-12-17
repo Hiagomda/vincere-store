@@ -10,25 +10,25 @@ public class ItemPedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 🔹 referência ao pedido que contém este item
+    //  referência ao pedido que contém este item
     @ManyToOne(optional = false)
     @JoinColumn(name = "pedido_id", nullable = false)
     private Pedido pedido;
 
-    // 🔹 referência à variação comprada (tamanho, cor, etc)
+    //  referência à variação comprada (tamanho, cor, etc)
     @ManyToOne(optional = false)
     @JoinColumn(name = "variacao_id", nullable = false)
     private VariacaoProduto variacao;
 
-    // 🔹 quantidade comprada
+    // quantidade comprada
     @Column(nullable = false)
     private Integer quantidade;
 
-    // 🔹 preço unitário no momento da compra
+    // preço unitário no momento da compra
     @Column(nullable = false)
     private Double precoUnitario;
 
-    // 🔹 construtor vazio (obrigatório para JPA)
+    //  construtor vazio (obrigatório para JPA)
     public ItemPedido() {
     }
 
@@ -45,7 +45,7 @@ public class ItemPedido {
         this.precoUnitario = precoUnitario;
     }
 
-    // 🔹 getters e setters
+    //  getters e setters
     public Long getId() {
         return id;
     }
